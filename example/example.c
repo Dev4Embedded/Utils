@@ -32,14 +32,17 @@ int main()
 		}
 	}
 
-	char string[] = {"002324900"};
+	char string[] = {"-002324900"};
 	int32_t integer;
 	UTILS_ERROR error = UTILS_AsciiString2Int(string, &integer);
 	switch(error)
 	{
 		case ERROR_SUCCESS: printf("Integer value: %i",integer);break;
 		case ERROR_NULL_POINTER:
-		case ERROR_CONVERSION_FAIL: printf("Conversion failure!");break;
+		case ERROR_CONVERSION_FAIL:
+		default:
+			printf("Conversion failure!");break;
+
 	}
 
 
