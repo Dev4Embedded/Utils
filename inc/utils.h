@@ -26,6 +26,18 @@ typedef enum
 UTILS_ERROR UTILS_GetSizeOfAsciiString(char* string, uint32_t* size);
 
 /**
+ * @brief	Get number of digits in integer value
+ *
+ * @param[in]	number:		an integer value to calculate the number of digits
+ * @param[out]	digits:		number of digits
+ *
+ * @return Utils error:	ERROR_NULL_POINTER - digits pointer is equal null
+ * 						ERROR_SUCCESS	   - function executed without errors
+ *  					ERROR_FAIL		   - general error
+ */
+UTILS_ERROR UTILS_GetNumberOfDigit(int32_t number,uint8_t* digits);
+
+/**
  * @brief	Convert single ASCII character to digit
  *
  * Conversion is possible only for single byte characters which are digits:
@@ -69,5 +81,21 @@ UTILS_ERROR UTILS_Byte2AsciiDigit(uint8_t byte, char* ascii);
  *  					ERROR_FAIL			  - general error‬
  */
 UTILS_ERROR UTILS_AsciiString2Int(char* string, int32_t* integer);
+
+/**
+ * @brief Convert integer value to ASCII character string
+ *
+ * The 'string' must have allocated memory for a number with a minimum 'length'
+ * equal to the number of digits in the 'integer' value plus the character sign
+ * (if a value of 'integer' is negative). If the size of number is unknown
+ * that is safe to use UTILS_INT_MAX_DIGITS to allocate 'string' array.
+ * All empty bytes will be set as NULL.
+ *
+ * @param[in]	integer:	integer value to be converted to ASCII string
+ * @param[out]	string:		ASCII string of integer value
+ * @param[in]	length:		length of string (before conversion)
+ *
+ */
+UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length);
 
 #endif /* INC_UTILS_H_ */

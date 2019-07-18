@@ -28,7 +28,40 @@ UTILS_ERROR UTILS_GetSizeOfAsciiString(char* string, uint32_t* size)
 	*size = t_size;
 	return ERROR_SUCCESS;
 }
-
+/**
+ * @brief	Get number of digits in integer value
+ *
+ * @param[in]	number:		an integer value to calculate the number of digits
+ * @param[out]	digits:		number of digits
+ *
+ * @return Utils error:	ERROR_NULL_POINTER - digits pointer is equal null
+ * 						ERROR_SUCCESS	   - function executed without errors
+ *  					ERROR_FAIL		   - general error
+ */
+UTILS_ERROR UTILS_GetNumberOfDigit(int32_t number,uint8_t* digits)
+{
+	if(digits == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	if(number == 0)
+	{
+		*digits = 1;
+		return ERROR_SUCCESS;
+	}
+	uint32_t divider = 1;
+	number = abs(number);
+	for(uint8_t digit = 1; digit <= UTILS_INT_MAX_DIGITS; digit++)
+	{
+		if(number / divider <= 0)
+		{
+			*digits = digit-1;
+			return ERROR_SUCCESS;
+		}
+		divider *= 10;
+	}
+	return ERROR_FAIL;
+}
 /**
  * @brief	Convert single ASCII character to digit
  *
@@ -150,5 +183,73 @@ UTILS_ERROR UTILS_AsciiString2Int(char* string, int32_t* integer)
 	if(isNegative) value *= (-1);
 	*integer = value;
 
+	return ERROR_SUCCESS;
+}
+
+/**
+ * @brief Convert integer value to ASCII character string
+ *
+ * The 'string' must have allocated memory for a number with a minimum 'length'
+ * equal to the number of digits in the 'integer' value plus the character sign
+ * (if a value of 'integer' is negative). If the size of number is unknown
+ * that is safe to use UTILS_INT_MAX_DIGITS to allocate 'string' array.
+ * All empty bytes will be set as NULL.
+ *
+ * @param[in]	integer:	integer value to be converted to ASCII string
+ * @param[out]	string:		ASCII string of integer value
+ * @param[in]	length:		length of string (before conversion)
+ *
+ */
+UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
+{
+	if(string == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	uint8_t numberOfdigits;
+	if(UTILS_GetNumberOfDigit(integer,&numberOfdigits) != ERROR_SUCCESS)
+	{
+		return ERROR_FAIL;
+	}
+	if(numberOfdigits > length)
+	{
+		return ERROR_CONVERSION_FAIL;
+	}
+
+	uint32_t divider = pow(10,numberOfdigits-1);
+	uint8_t charCounter;
+	if(integer<0)
+	{
+		string[0] = '-';
+		charCounter=1;
+		integer = abs(integer);
+		numberOfdigits++;
+	}
+	else
+	{
+		charCounter =0;
+	}
+
+ 	while(charCounter<numberOfdigits)
+	{
+		uint8_t digit =  (integer / divider) % 10;
+		char asciiDigit;
+		if(UTILS_Byte2AsciiDigit(digit,&asciiDigit) == ERROR_SUCCESS)
+		{
+			string[charCounter] = asciiDigit;
+			divider/=10;
+		}
+		else
+		{
+			return ERROR_FAIL;
+		}
+		charCounter++;
+	}
+	if(charCounter < length)
+	{
+		for(uint8_t fill = charCounter;fill<length; fill++){
+			string[fill] = 0x00;
+		}
+	}
 	return ERROR_SUCCESS;
 }
