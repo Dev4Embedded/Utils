@@ -9,7 +9,35 @@ int main()
 {
 	srand((int)time(NULL));
 	printf("Example application has started!\n");
+	printf("[TEST] Conversion unsigned integer to byte array \n");
+	UTILS_ERROR retval;
+	uint32_t doubleWord = rand();
+	uint8_t byteArray[4];
 
+	retval = UTILS_Uint2ByteArray(doubleWord,byteArray);
+
+	if(retval)
+	{
+		printf("UTILS_Uint2ByteArray() return error code: %x", retval);
+	}
+
+	printf("Integer value: 0x%x Byte array is consist of: ",doubleWord);
+	for(int i=3;i>=0;i--){
+
+		if(byteArray[i]!=0) printf("0x%2x ", byteArray[i]);
+	}
+	printf("\n");
+	printf("[TEST] Conversion byte array to unsiged integer \n");
+	doubleWord = 0;
+	retval = UTILS_ByteArray2Uint(byteArray,&doubleWord);
+	
+	if(retval)
+	{
+		printf("UTILS_ByteArray2Uint() return error code: %x", retval);
+	}
+	
+	printf("Unsigned integer is equal: 0x%x \n", doubleWord);
+	
 	printf("[TEST] Conversion digit in ASCII format to integer \n");
 
 	char ascii[] = {'0','1','2','3','4','5','6','7','8','9','a','G','!'};
@@ -67,8 +95,5 @@ int main()
 			printf("Conversion failure!\n");
 			break;
 		}
-
 	}
-
 }
-;
