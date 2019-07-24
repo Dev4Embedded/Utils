@@ -190,8 +190,8 @@ UTILS_ERROR UTILS_Byte2AsciiDigit(uint8_t byte, char* ascii)
  * integer with sign is equal -‭2.147.483.648. NULL (0x00) character is condition of stop during
  * checking the number of digit in string.
  *
- * @param[in] 	string	chain of digits
- * @param[out]	integer	conversion result
+ * @param[in] 	string:		chain of digits
+ * @param[out]	integer:	conversion result
  *
  * @return Utils error:
  * 		ERROR_NULL_POINTER		- pointer on string or integer is NULL
@@ -327,12 +327,22 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
 	}
 	return ERROR_SUCCESS;
 }
+
 /**
  * @brief	Convert hexadecimal string to unsigned integer
  *
  * Hexadecimal string can has "0x" and "x" on the beginning. However, all string
  * must consist only hex characters just like: 0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F
  * and also: a,b,c,d,e,f.
+ *
+ * @param[in]	hex:		hexadecimal string
+ * @param[out]	integer:	conversion result
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  In hex string is not allowed character
+ * 		ERROR_SUCCESS			- conversion executed without errors
  *
  */
 UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer)
@@ -374,11 +384,12 @@ UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer)
 	uint32_t value = 0;
 	for(int i = digitCtr+digitOffset-1; i>=digitOffset; i--)
 	{
-		volatile uint32_t var =  UTILS_HEX2BYTE(hex[i]);
-		value += var * range;
+		value += UTILS_HEX2BYTE(hex[i]) * range;
 		range *= 16;
 	}
 	*integer = value;
 	return ERROR_SUCCESS;
 
 }
+
+

@@ -5,10 +5,10 @@
 
 typedef enum
 {
-	ERROR_SUCCESS 			= 0x00,
-	ERROR_NULL_POINTER		= 0x01,
-	ERROR_CONVERSION_FAIL	= 0x02,
-	ERROR_FAIL				= 0x03
+	ERROR_SUCCESS 				= 0x00,
+	ERROR_NULL_POINTER			= 0x01,
+	ERROR_CONVERSION_FAIL		= 0x02,
+	ERROR_FAIL					= 0x03,
 }UTILS_ERROR;
 
 /**
@@ -145,7 +145,6 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
  * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
  * 								  In hex string is not allowed character
  * 		ERROR_SUCCESS			- conversion executed without errors
- *
  */
 UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer);
 
