@@ -96,4 +96,12 @@ int main()
 			break;
 		}
 	}
+	printf("[TEST] Conversion hexadecimal string to unsigned integer \n");
+	{
+		uint32_t integer;
+		char hex[]="xAbC10Fd";
+		UTILS_Hex2Int(hex,&integer);
+		printf("The hexadecimal string \"%s\" was converted to 0x%x integer\n",hex,integer);
+	}
+
 }

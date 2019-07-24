@@ -3,7 +3,23 @@
 
 #define UTILS_INT_MAX_VALUE  0x7FFFFFFF	//‭2147483647
 #define UTILS_INT_MAX_DIGITS 10			//‭2.147.483.647
+#define UTILS_HEX_MAX_DIGITS 8
+#define UTILS_HEX2BYTE(hex) (hex >= '0' && hex <='9') ? \
+							(hex - '0') : (hex >= 'a' && hex <= 'f') ? \
+							(hex - 'a' + 10) : (hex - 'A' + 10)
+const char hexDigits[] =	{'0','1','2','3','4','5','6','7','8','9','A',
+							 'B','C','D','E','F','a','b','c','d','e','f'};
 
+static int isHexDigit(char* digit)
+
+{
+	if(digit == NULL) return 0;
+	for(uint8_t digitCtr = 0; digitCtr < sizeof(hexDigits); digitCtr++)
+	{
+		if(*digit == hexDigits[digitCtr]) return 1;
+	}
+	return 0;
+}
 /**
 * @brief	Convert unsigned integer variable to byte array of size of four.
 * @note		The minimum size of byteArray must be bigger then 4
@@ -310,4 +326,59 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
 		}
 	}
 	return ERROR_SUCCESS;
+}
+/**
+ * @brief	Convert hexadecimal string to unsigned integer
+ *
+ * Hexadecimal string can has "0x" and "x" on the beginning. However, all string
+ * must consist only hex characters just like: 0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F
+ * and also: a,b,c,d,e,f.
+ *
+ */
+UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer)
+{
+	if(hex == NULL || integer == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+
+	uint8_t digitCtr=0, digitOffset = 0;
+
+	if (hex[0] == 'x' || hex[0] == 'X')
+	{
+		digitOffset = 1;
+	}
+	if (hex[0] == '0' && (hex[1] == 'x' || hex[1] == 'X'))
+	{
+		digitOffset = 2;
+	}
+	char* ptr = &hex[digitOffset];
+	while(ptr++ != NULL)
+	{
+		if(*ptr != 0)break;
+		if(isHexDigit(ptr) == 0)
+		{
+			return ERROR_CONVERSION_FAIL;
+		}
+	}
+	while(digitCtr+digitOffset < UTILS_HEX_MAX_DIGITS+digitOffset)
+	{
+		if(isHexDigit(&hex[digitCtr+digitOffset]) == 0)
+		{
+			break;
+		}
+		digitCtr++;
+	}
+
+	uint32_t range = 1;
+	uint32_t value = 0;
+	for(int i = digitCtr+digitOffset-1; i>=digitOffset; i--)
+	{
+		volatile uint32_t var =  UTILS_HEX2BYTE(hex[i]);
+		value += var * range;
+		range *= 16;
+	}
+	*integer = value;
+	return ERROR_SUCCESS;
+
 }

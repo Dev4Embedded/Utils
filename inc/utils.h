@@ -130,4 +130,23 @@ UTILS_ERROR UTILS_AsciiString2Int(char* string, int32_t* integer);
  */
 UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length);
 
+/**
+ * @brief	Convert hexadecimal string to unsigned integer
+ *
+ * Hexadecimal string can has "0x" and "x" on the beginning. However, all string
+ * must consist only hex characters just like: 0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F
+ * and also: a,b,c,d,e,f.
+ *
+ * @param[in]	hex:		hexadecimal string
+ * @param[out]	integer:	conversion result
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  In hex string is not allowed character
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ *
+ */
+UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer);
+
 #endif /* INC_UTILS_H_ */
