@@ -319,8 +319,8 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
 /**
  * @brief Get the physical byting form of the floating point variable
  *
- * @param[in]	floating point variable;
- * @param[out]	physical format of float stored in memory
+ * @param[in]	fp:			floating point value
+ * @param[out]	integer:	physical format of float stored in memory
  *
  * @return Utils error:
  * 		ERROR_NULL_POINTER		- pointer on integer is NULL
@@ -334,5 +334,26 @@ UTILS_ERROR Float2Uint(float fp, uint32_t* integer)
 	}
 	ConversionUnion.fp = fp;
 	*integer = ConversionUnion.integer;
+	return ERROR_SUCCESS;
+}
+
+/**
+ * @brief Transform binary form to floating precision
+ *
+ * @param[in]	integer:	binary format
+ * @param[out]	fp:			floating precision value
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on floating precision variable is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR Uint2Float(uint32_t integer, float* fp)
+{
+	if(fp == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	ConversionUnion.integer = integer;
+	*fp = ConversionUnion.fp;
 	return ERROR_SUCCESS;
 }

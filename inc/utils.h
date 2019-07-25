@@ -142,4 +142,16 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
  */
 UTILS_ERROR Float2Uint(float fp, uint32_t* integer);
 
+/**
+ * @brief Transform binary form to floating precision
+ *
+ * @param[in]	integer:	binary format
+ * @param[out]	fp:			floating precision value
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on floating precision variable is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR Uint2Float(uint32_t integer, float* fp);
+
 #endif /* INC_UTILS_H_ */
