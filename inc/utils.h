@@ -1,3 +1,31 @@
+/**
+ * @license
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ *
+ * @copyrights Copyrights 2019 Stanislaw Pietrzak. All rights reserved.
+ * @file utils.h
+ * @author Stanislaw Pietrzak
+ * @email integralzerox@gmail.com
+ * @date 25 July 2019
+ * @brief Collection of useful functions
+ *
+ * The file contains a collection of useful functions when
+ * programming poor memory platforms just like embedded, or for some reason
+ * you do not want to use standard C libraries.
+ *
+ * @see https://github.com/Dev4Embedded/
+ */
 #ifndef INC_UTILS_H_
 #define INC_UTILS_H_
 
