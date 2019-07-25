@@ -130,4 +130,16 @@ UTILS_ERROR UTILS_AsciiString2Int(char* string, int32_t* integer);
  */
 UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length);
 
+/**
+ * @brief Get the physical byting form of the floating point variable
+ *
+ * @param[in]	floating point variable;
+ * @param[out]	physical format of float stored in memory
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on integer is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR Float2Uint(float fp, uint32_t* integer);
+
 #endif /* INC_UTILS_H_ */

@@ -4,6 +4,11 @@
 #define UTILS_INT_MAX_VALUE  0x7FFFFFFF	//‭2147483647
 #define UTILS_INT_MAX_DIGITS 10			//‭2.147.483.647
 
+union UTILS_ConversionUnion
+{
+	float fp;
+	uint32_t integer;
+}ConversionUnion;
 /**
 * @brief	Convert unsigned integer variable to byte array of size of four.
 * @note		The minimum size of byteArray must be bigger then 4
@@ -309,5 +314,25 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
 			string[fill] = 0x00;
 		}
 	}
+	return ERROR_SUCCESS;
+}
+/**
+ * @brief Get the physical byting form of the floating point variable
+ *
+ * @param[in]	floating point variable;
+ * @param[out]	physical format of float stored in memory
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on integer is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR Float2Uint(float fp, uint32_t* integer)
+{
+	if(integer == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	ConversionUnion.fp = fp;
+	*integer = ConversionUnion.integer;
 	return ERROR_SUCCESS;
 }
