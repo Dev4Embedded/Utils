@@ -4,9 +4,11 @@
 #define UTILS_INT_MAX_VALUE  0x7FFFFFFF	//‭2147483647
 #define UTILS_INT_MAX_DIGITS 10			//‭2.147.483.647
 #define UTILS_HEX_MAX_DIGITS 8
-#define UTILS_HEX2BYTE(hex) (hex >= '0' && hex <='9') ? \
+#define UTILS_HEX2BYTE(hex)	(hex >= '0' && hex <='9') ? \
 							(hex - '0') : (hex >= 'a' && hex <= 'f') ? \
 							(hex - 'a' + 10) : (hex - 'A' + 10)
+#define UTILS_INT2HEX(integer)	(integer >= 0 && integer <= 9) ? \
+								(integer + '0') : (integer + 'A' - 10)
 const char hexDigits[] =	{'0','1','2','3','4','5','6','7','8','9','A',
 							 'B','C','D','E','F','a','b','c','d','e','f'};
 
@@ -20,6 +22,19 @@ static int isHexDigit(char* digit)
 	}
 	return 0;
 }
+static uint32_t getNumberOfHexDigits(uint32_t hex)
+{
+	if(hex <= 0xF)			return 1;
+	if(hex <= 0xFF) 		return 2;
+	if(hex <= 0xFFF)		return 3;
+	if(hex <= 0xFFFF)		return 4;
+	if(hex <= 0xFFFFF)		return 5;
+	if(hex <= 0xFFFFFF)		return 6;
+	if(hex <= 0xFFFFFFF)	return 7;
+	if(hex <= 0xFFFFFFFF)	return 8;
+	return 0;
+}
+
 /**
 * @brief	Convert unsigned integer variable to byte array of size of four.
 * @note		The minimum size of byteArray must be bigger then 4
@@ -384,7 +399,7 @@ UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer)
 	uint32_t value = 0;
 	for(int i = digitCtr+digitOffset-1; i>=digitOffset; i--)
 	{
-		value += UTILS_HEX2BYTE(hex[i]) * range;
+		value += (UTILS_HEX2BYTE(hex[i])) * range;
 		range *= 16;
 	}
 	*integer = value;
@@ -392,4 +407,45 @@ UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer)
 
 }
 
+UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length)
+{
+	if(hex == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	uint8_t hexLength = getNumberOfHexDigits(integer);
+	if(hexLength + 2 > length)
+	{
+		return ERROR_CONVERSION_FAIL;
+	}
+	hex[0] = '0';
+	hex[1] = 'x';
 
+	const uint8_t charOffset = 2;
+	uint32_t mask  = 0xF0000000;
+	uint32_t shift = 28;
+	uint32_t digitCtr = 0;
+	uint8_t isConvStart = 0;
+	for(int nibble = 0; nibble < 8 ; nibble++)
+	{
+		uint32_t hexPart = ((mask&integer)>>shift);
+		if(hexPart != 0 || isConvStart)
+		{
+			isConvStart = 1;
+			hex[charOffset+digitCtr] = UTILS_INT2HEX(hexPart);
+			digitCtr++;
+		}
+		mask>>=4;
+		shift-=4;
+	}
+	if(integer == 0)
+	{
+		hex[2] = '0';
+		digitCtr++;
+	}
+	for(uint8_t rest = digitCtr+charOffset; rest<length; rest++)
+	{
+		hex[rest] = 0x00;
+	}
+	return ERROR_SUCCESS;
+}

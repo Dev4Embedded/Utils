@@ -103,5 +103,12 @@ int main()
 		UTILS_Hex2Int(hex,&integer);
 		printf("The hexadecimal string \"%s\" was converted to 0x%x integer\n",hex,integer);
 	}
+	printf("[TEST] Conversion unsigned integer to hexadecimal string \n");
+	{
+		char hex[10];
+		uint32_t integer = rand();
+		UTILS_Int2Hex(integer,hex,sizeof(hex));
+		printf("Integer variable %x was converted to \"%s\" string\n",integer,hex);
+	}
 
 }

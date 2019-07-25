@@ -148,4 +148,6 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
  */
 UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer);
 
+UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length);
+
 #endif /* INC_UTILS_H_ */
