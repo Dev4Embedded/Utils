@@ -12,6 +12,12 @@
 const char hexDigits[] =	{'0','1','2','3','4','5','6','7','8','9','A',
 							 'B','C','D','E','F','a','b','c','d','e','f'};
 
+union UTILS_ConversionUnion
+{
+	float fp;
+	uint32_t integer;
+}ConversionUnion;
+
 static int isHexDigit(char* digit)
 
 {
@@ -340,6 +346,47 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
 			string[fill] = 0x00;
 		}
 	}
+	return ERROR_SUCCESS;
+}
+/**
+ * @brief Get the physical byting form of the floating point variable
+ *
+ * @param[in]	fp:			floating point value
+ * @param[out]	integer:	physical format of float stored in memory
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on integer is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2Uint(float fp, uint32_t* integer)
+{
+	if(integer == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	ConversionUnion.fp = fp;
+	*integer = ConversionUnion.integer;
+	return ERROR_SUCCESS;
+}
+
+/**
+ * @brief Transform binary form to floating precision
+ *
+ * @param[in]	integer:	binary format
+ * @param[out]	fp:			floating precision value
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on floating precision variable is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Uint2Float(uint32_t integer, float* fp)
+{
+	if(fp == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	ConversionUnion.integer = integer;
+	*fp = ConversionUnion.fp;
 	return ERROR_SUCCESS;
 }
 
