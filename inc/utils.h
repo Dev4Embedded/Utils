@@ -193,4 +193,23 @@ UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer);
  */
 UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length);
 
+/**
+ * @brief Convert float position variable to hexadecimal ASCII string
+ *
+ * The minimum of 'hex' string must be 10 (Number of max. digit in hex format
+ * plus '0x' prefix) or greater.
+ *
+ * @param[in]	fp:		floating point value
+ * @param[out]	hex:	pointer on hexadecimal string
+ * @param[in]	length:	length of string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of hex is too short
+ * 		ERROR_FAIL				- general error
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2Hex(float fp, char* hex, uint8_t length);
+
 #endif /* INC_UTILS_H_ */

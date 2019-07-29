@@ -4,6 +4,7 @@
 #define UTILS_INT_MAX_VALUE  0x7FFFFFFF	//‭2147483647
 #define UTILS_INT_MAX_DIGITS 10			//‭2.147.483.647
 #define UTILS_HEX_MAX_DIGITS 8
+#define UTILS_SIZE_OF_HEX_PREFIX 2
 #define UTILS_HEX2BYTE(hex)	(hex >= '0' && hex <='9') ? \
 							(hex - '0') : (hex >= 'a' && hex <= 'f') ? \
 							(hex - 'a' + 10) : (hex - 'A' + 10)
@@ -515,3 +516,48 @@ UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length)
 	}
 	return ERROR_SUCCESS;
 }
+
+/**
+ * @brief Convert float position variable to hexadecimal ASCII string
+ *
+ * The minimum of 'hex' string must be 10 (Number of max. digit in hex format
+ * plus '0x' prefix) or greater.
+ *
+ * @param[in]	fp:		floating point value
+ * @param[out]	hex:	pointer on hexadecimal string
+ * @param[in]	length:	length of string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of hex is too short
+ * 		ERROR_FAIL				- general error
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2Hex(float fp, char* hex, uint8_t length)
+{
+	if(hex == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	if(length < UTILS_HEX_MAX_DIGITS + UTILS_SIZE_OF_HEX_PREFIX)
+	{
+		return ERROR_CONVERSION_FAIL;
+	}
+	UTILS_ERROR errorCode;
+	uint32_t integer;
+
+	errorCode = UTILS_Float2Uint(fp,&integer);
+	if(errorCode != ERROR_SUCCESS)
+	{
+		return ERROR_FAIL;
+	}
+
+	errorCode = UTILS_Int2Hex(integer,hex,length);
+	if(errorCode  != ERROR_SUCCESS)
+	{
+		return ERROR_FAIL;
+	}
+	return errorCode;
+}
+
