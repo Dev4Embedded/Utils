@@ -407,6 +407,25 @@ UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer)
 
 }
 
+/**
+ * @brief	Convert integer to hexadecimal string
+ *
+ * The ASCII 'hex' string should have a length appropriate to
+ * the value of the integer variable. If value of integer is not known,
+ * for safety, allocate size of 'hex' as possible maximum value 8 digits
+ * + 2('0 ') hexadecimal characters.
+ *
+ * @param[in]	integer:	integer value to be converted to hexadecimal string
+ * @param[out]	hex:		hexadecimal string
+ * @param[in]	length:		length of hex string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of hex is too short.
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ *
+ */
 UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length)
 {
 	if(hex == NULL)
