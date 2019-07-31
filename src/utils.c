@@ -32,6 +32,44 @@
 
 #define UTILS_INT_MAX_VALUE  0x7FFFFFFF	//‭2147483647
 #define UTILS_INT_MAX_DIGITS 10			//‭2.147.483.647
+#define UTILS_HEX_MAX_DIGITS 8
+#define UTILS_SIZE_OF_HEX_PREFIX 2
+#define UTILS_HEX2BYTE(hex)	(hex >= '0' && hex <='9') ? \
+							(hex - '0') : (hex >= 'a' && hex <= 'f') ? \
+							(hex - 'a' + 10) : (hex - 'A' + 10)
+#define UTILS_INT2HEX(integer)	(integer >= 0 && integer <= 9) ? \
+								(integer + '0') : (integer + 'A' - 10)
+const char hexDigits[] =	{'0','1','2','3','4','5','6','7','8','9','A',
+							 'B','C','D','E','F','a','b','c','d','e','f'};
+
+union UTILS_ConversionUnion
+{
+	float fp;
+	uint32_t integer;
+}ConversionUnion;
+
+static int isHexDigit(char* digit)
+
+{
+	if(digit == NULL) return 0;
+	for(uint8_t digitCtr = 0; digitCtr < sizeof(hexDigits); digitCtr++)
+	{
+		if(*digit == hexDigits[digitCtr]) return 1;
+	}
+	return 0;
+}
+static uint32_t getNumberOfHexDigits(uint32_t hex)
+{
+	if(hex <= 0xF)			return 1;
+	if(hex <= 0xFF) 		return 2;
+	if(hex <= 0xFFF)		return 3;
+	if(hex <= 0xFFFF)		return 4;
+	if(hex <= 0xFFFFF)		return 5;
+	if(hex <= 0xFFFFFF)		return 6;
+	if(hex <= 0xFFFFFFF)	return 7;
+	if(hex <= 0xFFFFFFFF)	return 8;
+	return 0;
+}
 
 /**
 * @brief	Convert unsigned integer variable to byte array of size of four.
@@ -203,8 +241,8 @@ UTILS_ERROR UTILS_Byte2AsciiDigit(uint8_t byte, char* ascii)
  * integer with sign is equal -‭2.147.483.648. NULL (0x00) character is condition of stop during
  * checking the number of digit in string.
  *
- * @param[in] 	string	chain of digits
- * @param[out]	integer	conversion result
+ * @param[in] 	string:		chain of digits
+ * @param[out]	integer:	conversion result
  *
  * @return Utils error:
  * 		ERROR_NULL_POINTER		- pointer on string or integer is NULL
@@ -340,3 +378,215 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
 	}
 	return ERROR_SUCCESS;
 }
+/**
+ * @brief Get the physical byting form of the floating point variable
+ *
+ * @param[in]	fp:			floating point value
+ * @param[out]	integer:	physical format of float stored in memory
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on integer is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2Uint(float fp, uint32_t* integer)
+{
+	if(integer == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	ConversionUnion.fp = fp;
+	*integer = ConversionUnion.integer;
+	return ERROR_SUCCESS;
+}
+
+/**
+ * @brief Transform binary form to floating precision
+ *
+ * @param[in]	integer:	binary format
+ * @param[out]	fp:			floating precision value
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on floating precision variable is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Uint2Float(uint32_t integer, float* fp)
+{
+	if(fp == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	ConversionUnion.integer = integer;
+	*fp = ConversionUnion.fp;
+	return ERROR_SUCCESS;
+}
+
+/**
+ * @brief	Convert hexadecimal string to unsigned integer
+ *
+ * Hexadecimal string can has "0x" and "x" on the beginning. However, all string
+ * must consist only hex characters just like: 0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F
+ * and also: a,b,c,d,e,f.
+ *
+ * @param[in]	hex:		hexadecimal string
+ * @param[out]	integer:	conversion result
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  In hex string is not allowed character
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ *
+ */
+UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer)
+{
+	if(hex == NULL || integer == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+
+	uint8_t digitCtr=0, digitOffset = 0;
+
+	if (hex[0] == 'x' || hex[0] == 'X')
+	{
+		digitOffset = 1;
+	}
+	if (hex[0] == '0' && (hex[1] == 'x' || hex[1] == 'X'))
+	{
+		digitOffset = 2;
+	}
+	char* ptr = &hex[digitOffset];
+	while(ptr++ != NULL)
+	{
+		if(*ptr != 0)break;
+		if(isHexDigit(ptr) == 0)
+		{
+			return ERROR_CONVERSION_FAIL;
+		}
+	}
+	while(digitCtr+digitOffset < UTILS_HEX_MAX_DIGITS+digitOffset)
+	{
+		if(isHexDigit(&hex[digitCtr+digitOffset]) == 0)
+		{
+			break;
+		}
+		digitCtr++;
+	}
+
+	uint32_t range = 1;
+	uint32_t value = 0;
+	for(int i = digitCtr+digitOffset-1; i>=digitOffset; i--)
+	{
+		value += (UTILS_HEX2BYTE(hex[i])) * range;
+		range *= 16;
+	}
+	*integer = value;
+	return ERROR_SUCCESS;
+
+}
+
+/**
+ * @brief	Convert integer to hexadecimal string
+ *
+ * The ASCII 'hex' string should have a length appropriate to
+ * the value of the integer variable. If value of integer is not known,
+ * for safety, allocate size of 'hex' as possible maximum value 8 digits
+ * + 2('0 ') hexadecimal characters.
+ *
+ * @param[in]	integer:	integer value to be converted to hexadecimal string
+ * @param[out]	hex:		hexadecimal string
+ * @param[in]	length:		length of hex string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of hex is too short.
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ *
+ */
+UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length)
+{
+	if(hex == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	uint8_t hexLength = getNumberOfHexDigits(integer);
+	if(hexLength + 2 > length)
+	{
+		return ERROR_CONVERSION_FAIL;
+	}
+	hex[0] = '0';
+	hex[1] = 'x';
+
+	const uint8_t charOffset = 2;
+	uint32_t mask  = 0xF0000000;
+	uint32_t shift = 28;
+	uint32_t digitCtr = 0;
+	uint8_t isConvStart = 0;
+	for(int nibble = 0; nibble < 8 ; nibble++)
+	{
+		uint32_t hexPart = ((mask&integer)>>shift);
+		if(hexPart != 0 || isConvStart)
+		{
+			isConvStart = 1;
+			hex[charOffset+digitCtr] = UTILS_INT2HEX(hexPart);
+			digitCtr++;
+		}
+		mask>>=4;
+		shift-=4;
+	}
+	if(integer == 0)
+	{
+		hex[2] = '0';
+		digitCtr++;
+	}
+	for(uint8_t rest = digitCtr+charOffset; rest<length; rest++)
+	{
+		hex[rest] = 0x00;
+	}
+	return ERROR_SUCCESS;
+}
+
+/**
+ * @brief Convert float position variable to hexadecimal ASCII string
+ *
+ * The minimum of 'hex' string must be 10 (Number of max. digit in hex format
+ * plus '0x' prefix) or greater.
+ *
+ * @param[in]	fp:		floating point value
+ * @param[out]	hex:	pointer on hexadecimal string
+ * @param[in]	length:	length of string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of hex is too short
+ * 		ERROR_FAIL				- general error
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2Hex(float fp, char* hex, uint8_t length)
+{
+	if(hex == NULL)
+	{
+		return ERROR_NULL_POINTER;
+	}
+	if(length < UTILS_HEX_MAX_DIGITS + UTILS_SIZE_OF_HEX_PREFIX)
+	{
+		return ERROR_CONVERSION_FAIL;
+	}
+	UTILS_ERROR errorCode;
+	uint32_t integer;
+
+	errorCode = UTILS_Float2Uint(fp,&integer);
+	if(errorCode != ERROR_SUCCESS)
+	{
+		return ERROR_FAIL;
+	}
+
+	errorCode = UTILS_Int2Hex(integer,hex,length);
+	if(errorCode  != ERROR_SUCCESS)
+	{
+		return ERROR_FAIL;
+	}
+	return errorCode;
+}
+

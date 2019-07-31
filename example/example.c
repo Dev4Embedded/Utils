@@ -96,4 +96,37 @@ int main()
 			break;
 		}
 	}
+	printf("[TEST] Conversion hexadecimal string to unsigned integer \n");
+	{
+		uint32_t integer;
+		char hex[]="xAbC10Fd";
+		UTILS_Hex2Int(hex,&integer);
+		printf("The hexadecimal string \"%s\" was converted to 0x%x integer\n",hex,integer);
+	}
+	printf("[TEST] Conversion unsigned integer to hexadecimal string \n");
+	{
+		char hex[10];
+		uint32_t integer = rand();
+		UTILS_Int2Hex(integer,hex,sizeof(hex));
+		printf("Integer variable %x was converted to \"%s\" string\n",integer,hex);
+	}
+	printf("[TEST] Parse float point to unsigned integer (byte form in memory) \n");
+	{
+		float fp = (rand() / (float)RAND_MAX) * rand();
+		uint32_t phyForm;
+		UTILS_Float2Uint(fp,&phyForm);
+		printf("Float point variable %f has %u form in memory\n",fp,phyForm);
+
+		printf("[TEST] Parse unsigned integer (byte form) to float point\n");
+
+		UTILS_Uint2Float(phyForm,&fp);
+		printf("Physical byte form %u is equal %f float point variable\n",phyForm,fp);
+	}
+	printf("[TEST] Float point to hexadecimal ASCII string form in memory \n");
+	{
+		float fp = (rand() / (float)RAND_MAX) * rand();
+		char hexString[11];
+		UTILS_Float2Hex(fp,hexString,sizeof(hexString));
+		printf("Float pointing value %f has \"%s\" form in memory\n",fp,hexString);
+	}
 }

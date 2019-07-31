@@ -33,10 +33,10 @@
 
 typedef enum
 {
-	ERROR_SUCCESS 			= 0x00,
-	ERROR_NULL_POINTER		= 0x01,
-	ERROR_CONVERSION_FAIL	= 0x02,
-	ERROR_FAIL				= 0x03
+	ERROR_SUCCESS 				= 0x00,
+	ERROR_NULL_POINTER			= 0x01,
+	ERROR_CONVERSION_FAIL		= 0x02,
+	ERROR_FAIL					= 0x03,
 }UTILS_ERROR;
 
 /**
@@ -157,5 +157,87 @@ UTILS_ERROR UTILS_AsciiString2Int(char* string, int32_t* integer);
  * 		ERROR_FAIL				- general error
  */
 UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length);
+
+/**
+ * @brief Get the physical byting form of the floating point variable
+ *
+ * @param[in]	floating point variable;
+ * @param[out]	physical format of float stored in memory
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on integer is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2Uint(float fp, uint32_t* integer);
+
+/**
+ * @brief Transform binary form to floating precision
+ *
+ * @param[in]	integer:	binary format
+ * @param[out]	fp:			floating precision value
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on floating precision variable is NULL
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Uint2Float(uint32_t integer, float* fp);
+
+/**
+ * @brief	Convert hexadecimal string to unsigned integer
+ *
+ * Hexadecimal string can has "0x" and "x" on the beginning. However, all string
+ * must consist only hex characters just like: 0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F
+ * and also: a,b,c,d,e,f.
+ *
+ * @param[in]	hex:		hexadecimal string
+ * @param[out]	integer:	conversion result
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  In hex string is not allowed character
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer);
+
+/**
+ * @brief	Convert integer to hexadecimal string
+ *
+ * The ASCII 'hex' string should have a length appropriate to
+ * the value of the integer variable. If value of integer is not known,
+ * for safety, allocate size of 'hex' as possible maximum value 8 digits
+ * + 2('0 ') hexadecimal characters.
+ *
+ * @param[in]	integer:	integer value to be converted to hexadecimal string
+ * @param[out]	hex:		hexadecimal string
+ * @param[in]	length:		length of hex string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of hex is too short.
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ *
+ */
+UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length);
+
+/**
+ * @brief Convert float position variable to hexadecimal ASCII string
+ *
+ * The minimum of 'hex' string must be 10 (Number of max. digit in hex format
+ * plus '0x' prefix) or greater.
+ *
+ * @param[in]	fp:		floating point value
+ * @param[out]	hex:	pointer on hexadecimal string
+ * @param[in]	length:	length of string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of hex is too short
+ * 		ERROR_FAIL				- general error
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2Hex(float fp, char* hex, uint8_t length);
 
 #endif /* INC_UTILS_H_ */
