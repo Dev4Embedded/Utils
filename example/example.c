@@ -100,14 +100,14 @@ int main()
 	{
 		uint32_t integer;
 		char hex[]="xAbC10Fd";
-		UTILS_Hex2Int(hex,&integer);
+		UTILS_Hex2Uint(hex,&integer);
 		printf("The hexadecimal string \"%s\" was converted to 0x%x integer\n",hex,integer);
 	}
 	printf("[TEST] Conversion unsigned integer to hexadecimal string \n");
 	{
 		char hex[10];
 		uint32_t integer = rand();
-		UTILS_Int2Hex(integer,hex,sizeof(hex));
+		UTILS_Uint2Hex(integer,hex,sizeof(hex));
 		printf("Integer variable %x was converted to \"%s\" string\n",integer,hex);
 	}
 	printf("[TEST] Parse float point to unsigned integer (byte form in memory) \n");
@@ -129,4 +129,15 @@ int main()
 		UTILS_Float2Hex(fp,hexString,sizeof(hexString));
 		printf("Float pointing value %f has \"%s\" form in memory\n",fp,hexString);
 	}
+	printf("[TEST] Float point variable to ASCII string \n");
+	char array[6];
+	for(int i=0;i<10;i++)
+	{
+		float fp = (rand() / (float)RAND_MAX) * rand();
+		if(i%2)fp = fp * (-1.0);
+		UTILS_Float2AsciiString(fp,array,sizeof(array));
+		printf("Float point %4.4f value converted to ASCII string \"%s\"\n",fp,array);
+		for(int i=0;i<10;i++)array[i] = 0x00;
+	}
+
 }

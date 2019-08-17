@@ -43,7 +43,7 @@ typedef enum
 * @brief	Convert unsigned integer variable to byte array of size of four.
 * @note		The minimum size of byteArray must be bigger then 4
 * @param[IN]	integer:		unsigned integer value
-* @param[OUT] 	byteArray:		pointer on array
+* @param[OUT] 	byteArray:		pointer to array
 * @return Utils error:
 * 		ERROR_NULL_POINTER	- byteArray is equal null
 * 		ERROR_SUCCESS		- conversion executed without errors
@@ -53,8 +53,8 @@ UTILS_ERROR UTILS_Uint2ByteArray(uint32_t integer, uint8_t* byteArray);
 /**
 * @brief	Convert array of four bytes to unsigned integer
 * @note		The minimum size of byteArray must be bigger then 4
-* @param[IN] 	byteArray:		pointer on array
-* @param[OUT] 	integer:		pointer on unsigned integer variable
+* @param[IN] 	byteArray:		pointer to array
+* @param[OUT] 	integer:		pointer to unsigned integer variable
 * @return Utils error:
 * 		ERROR_NULL_POINTER	- byteArray or integer are equals null
 * 		ERROR_SUCCESS		- conversion executed without errors
@@ -67,7 +67,7 @@ UTILS_ERROR UTILS_ByteArray2Uint(uint8_t* byteArray, uint32_t* integer);
  * Get the number of characters from the ASCII string.
  * The function will count until it encounters a character that is not an ASCII symbol.
  *
- * @param[in]	string:			pointer on string
+ * @param[in]	string:			pointer to string
  * @param[out]	size:			number of characters in string
  *
  * @return Utils error:
@@ -99,7 +99,7 @@ UTILS_ERROR UTILS_GetNumberOfDigit(int32_t number,uint8_t* digits);
  * @param[out] byte:	value of digit
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on byte is NULL
+ * 		ERROR_NULL_POINTER		- pointer to byte is NULL
  *  	ERROR_CONVERSION_FAIL	- conversion is not possible. ASCII character is not a digit.
  *  	ERROR_SUCCESS			- conversion executed without errors
  */
@@ -112,7 +112,7 @@ UTILS_ERROR UTILS_AsciiDigit2Byte(char ascii, uint8_t* byte);
  * @param[out] ascii:	value of digit
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on ascii is NULL
+ * 		ERROR_NULL_POINTER		- pointer to ascii is NULL
  * 		ERROR_CONVERSION_FAIL	- conversion is not possible. Byte is out of range
  * 		ERROR_SUCCESS	 		- conversion executed without errors
  */
@@ -130,7 +130,7 @@ UTILS_ERROR UTILS_Byte2AsciiDigit(uint8_t byte, char* ascii);
  * @param[out]	integer	conversion result
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on string or integer is NULL
+ * 		ERROR_NULL_POINTER		- pointer to string or integer is NULL
  * 		ERROR_CONVERSION_FAIL	- conversion is not possible. ASCII string is too long
  * 		ERROR_SUCCESS			- conversion executed without errors
  * 		ERROR_FAIL				- general error‬
@@ -151,7 +151,7 @@ UTILS_ERROR UTILS_AsciiString2Int(char* string, int32_t* integer);
  * @param[in]	length:		length of string (before conversion)
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on string is NULL
+ * 		ERROR_NULL_POINTER		- pointer to string is NULL
  * 		ERROR_CONVERSION_FAIL	- conversion is not possible. Length of string is too small.
  * 		ERROR_SUCCESS			- conversion executed without errors
  * 		ERROR_FAIL				- general error
@@ -165,7 +165,7 @@ UTILS_ERROR UTILS_Int2AsciiString(int32_t integer, char* string, uint8_t length)
  * @param[out]	physical format of float stored in memory
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on integer is NULL
+ * 		ERROR_NULL_POINTER		- pointer to integer is NULL
  * 		ERROR_SUCCESS			- conversion executed without errors
  */
 UTILS_ERROR UTILS_Float2Uint(float fp, uint32_t* integer);
@@ -177,7 +177,7 @@ UTILS_ERROR UTILS_Float2Uint(float fp, uint32_t* integer);
  * @param[out]	fp:			floating precision value
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on floating precision variable is NULL
+ * 		ERROR_NULL_POINTER		- pointer to floating precision variable is NULL
  * 		ERROR_SUCCESS			- conversion executed without errors
  */
 UTILS_ERROR UTILS_Uint2Float(uint32_t integer, float* fp);
@@ -193,12 +193,12 @@ UTILS_ERROR UTILS_Uint2Float(uint32_t integer, float* fp);
  * @param[out]	integer:	conversion result
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_NULL_POINTER		- pointer to hex is NULL
  * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
  * 								  In hex string is not allowed character
  * 		ERROR_SUCCESS			- conversion executed without errors
  */
-UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer);
+UTILS_ERROR UTILS_Hex2Uint(char* hex, uint32_t* integer);
 
 /**
  * @brief	Convert integer to hexadecimal string
@@ -213,13 +213,13 @@ UTILS_ERROR UTILS_Hex2Int(char* hex, uint32_t* integer);
  * @param[in]	length:		length of hex string (before conversion)
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_NULL_POINTER		- pointer to hex is NULL
  * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
  * 								  length of hex is too short.
  * 		ERROR_SUCCESS			- conversion executed without errors
  *
  */
-UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length);
+UTILS_ERROR UTILS_Uint2Hex(uint32_t integer, char* hex, uint8_t length);
 
 /**
  * @brief Convert float position variable to hexadecimal ASCII string
@@ -228,16 +228,37 @@ UTILS_ERROR UTILS_Int2Hex(uint32_t integer, char* hex, uint8_t length);
  * plus '0x' prefix) or greater.
  *
  * @param[in]	fp:		floating point value
- * @param[out]	hex:	pointer on hexadecimal string
+ * @param[out]	hex:	pointer to hexadecimal string
  * @param[in]	length:	length of string (before conversion)
  *
  * @return Utils error:
- * 		ERROR_NULL_POINTER		- pointer on hex is NULL
+ * 		ERROR_NULL_POINTER		- pointer to hex is NULL
  * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
  * 								  length of hex is too short
  * 		ERROR_FAIL				- general error
  * 		ERROR_SUCCESS			- conversion executed without errors
  */
 UTILS_ERROR UTILS_Float2Hex(float fp, char* hex, uint8_t length);
+
+/**
+ * @brief Convert float position variable to digits ASCII string
+ *
+ * Length of 'ascii' array should be adequate to size of floating point 'fp'.
+ * This means that this function returns an error if the size of the integer
+ * "fp" does not fit in the array. Otherwise, the "ascii" array will be filled
+ *  with decimal digits to the end or set the rest of the cell to 0.
+ *
+ * @param[in]	fp:		floating point value
+ * @param[out]	ascii:	pointer to ascii array
+ * @param[in]	length:	length of string (before conversion)
+ *
+ * @return Utils error:
+ * 		ERROR_NULL_POINTER		- pointer to string is NULL
+ * 		ERROR_CONVERSION_FAIL	- conversion is not possible.
+ * 								  length of ascii is too short
+ * 		ERROR_FAIL				- general error
+ * 		ERROR_SUCCESS			- conversion executed without errors
+ */
+UTILS_ERROR UTILS_Float2AsciiString(float fp, char* ascii, uint8_t length);
 
 #endif /* INC_UTILS_H_ */
